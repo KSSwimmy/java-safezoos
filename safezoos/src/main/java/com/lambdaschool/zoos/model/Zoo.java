@@ -8,70 +8,57 @@ import java.util.List;
 
 @Entity
 @Table(name = "zoo")
-public class Zoo
-{
+public class Zoo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false)
     private long zooid;
 
     private String zooname;
 
-    @OneToMany(mappedBy = "zoo",
-               cascade = CascadeType.ALL,
-               orphanRemoval = true)
+    @OneToMany(mappedBy = "zoo", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("zoo")
     private List<Telephone> telephones = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(name = "zooanimals",
-               joinColumns = {@JoinColumn(name = "zooid")},
-               inverseJoinColumns = {@JoinColumn(name = "animalid")})
+    @JoinTable(name = "zooanimals", joinColumns = {@JoinColumn(name = "zooid")}, inverseJoinColumns = {@JoinColumn(name = "animalid")})
     @JsonIgnoreProperties("zoos")
     private List<Animal> animals = new ArrayList<>();
 
-    public long getZooid()
-    {
+    public long getZooid() {
         return zooid;
     }
 
-    public void setZooid(long zooid)
-    {
+    public void setZooid(long zooid) {
         this.zooid = zooid;
     }
 
-    public String getZooname()
-    {
+    public String getZooname() {
         return zooname;
     }
 
-    public void setZooname(String zooname)
-    {
+    public void setZooname(String zooname) {
         this.zooname = zooname;
     }
 
-    public List<Telephone> getTelephones()
-    {
+    public List<Telephone> getTelephones() {
         return telephones;
     }
 
-    public void setTelephones(List<Telephone> telephones)
-    {
+    public void setTelephones(List<Telephone> telephones) {
         this.telephones = telephones;
     }
 
-    public List<Animal> getAnimals()
-    {
+    public List<Animal> getAnimals() {
         return animals;
     }
 
-    public void setAnimals(List<Animal> animals)
-    {
+    public void setAnimals(List<Animal> animals) {
         this.animals = animals;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Zoo{" + "zooid=" + zooid + ", zooname='" + zooname + '\'' + ", telephones=" + telephones + ", animals=" + animals + '}';
     }
 }

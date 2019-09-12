@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -16,32 +17,21 @@ import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping("/admin")
-public class AdminController
-{
+@PreAuthorize("hasRole('ADMIN')")
+public class AdminController {
     @Autowired
     ZooService zooService;
 
-    @PutMapping(value = "/zoos/{id}",
-                produces = {"application/json"},
-                consumes = {"application/json"})
-    public ResponseEntity<?> updateZoo(
-            @RequestBody
-                    Zoo updateZoo,
-            @PathVariable
-                    long id)
-    {
+    @PutMapping(value = "/zoos/{id}", produces = {"application/json"}, consumes = {"application/json"})
+    public ResponseEntity<?> updateZoo(@RequestBody Zoo updateZoo, @PathVariable long id) {
         zooService.update(updateZoo, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    //localhost/2019/h2-console
     // POST localhost:2019/admin/zoos
-    @PostMapping(value = "/zoos",
-                 consumes = {"application/json"},
-                 produces = {"application/json"})
-    public ResponseEntity<?> addNewZoo(HttpServletRequest request, @Valid
-    @RequestBody
-            Zoo newZoo) throws URISyntaxException
-    {
+    @PostMapping(value = "/zoos", consumes = {"application/json"}, produces = {"application/json"})
+    public ResponseEntity<?> addNewZoo(HttpServletRequest request, @Valid @RequestBody Zoo newZoo) throws URISyntaxException {
         newZoo = zooService.save(newZoo);
 
         // set the location header for the newly created resource
@@ -55,21 +45,13 @@ public class AdminController
 
 
     @DeleteMapping(value = "/zoos/{zooid}")
-    public ResponseEntity<?> deleteZooById(
-            @PathVariable
-                    long zooid)
-    {
+    public ResponseEntity<?> deleteZooById(@PathVariable long zooid) {
         zooService.delete(zooid);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "/zoos/{zooid}/animals/{animalid}")
-    public ResponseEntity<?> saveZooAnimalCombo(HttpServletRequest request,
-            @PathVariable("zooid")
-                    long zooid,
-            @PathVariable("animalid")
-                    long animalid)
-    {
+    public ResponseEntity<?> saveZooAnimalCombo(HttpServletRequest request, @PathVariable("zooid") long zooid, @PathVariable("animalid") long animalid) {
 //        zooService.saveZooAnimalCombo(zooid, animalid);
 
         // set the location header for the newly created resource
